@@ -4,19 +4,25 @@
 	"Category": "",
 	"Description": "",
 	"Modules": [
-		{ 
+		{
 			"Name": "FPShooter",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"CoreUObject",
+				"UnrealEd"
+			]
 		},
 		{
 			"Name": "FPShooterEditor",
 			"Type": "Editor",
-			"LoadingPhase": "PostEngineInit",
-			"AdditionalDependencies": [
-				"Engine",
-				"CoreUObject"
-			]
+			"LoadingPhase": "PostEngineInit"
+		},
+		{
+			"Name": "WebServiceK",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit"
 		}
 	]
 }
