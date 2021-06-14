@@ -43,14 +43,14 @@ void MyCustomAssetActions::MyCustomAssetContext_Clicked()
 {
     TSharedRef<SWindow> CookbookWindow = SNew(SWindow).Title(FText::FromString(TEXT("Cookbook Window"))).ClientSize(FVector2D(800, 400)).SupportsMaximize(false).SupportsMinimize(false);
     // 윈도우 생성
-    IMainFrameModule& MainFrameModule = FModuleManager::LoadModuleChecked<IMainFrameModule>(TEXT("MainFrame")); // MainFrame 모듈 불러오기
+    IMainFrameModule& MainFrameModule = FModuleManager::LoadModuleChecked<IMainFrameModule>(TEXT("MainFrame")); // 생성된 새 창에서 에디터의 메인 어플리케이션 프레임 모듈을 불러온다.
 
-    if (MainFrameModule.GetParentWindow().IsValid()) // 이미 부모 창이 있을 경우
+    if (MainFrameModule.GetParentWindow().IsValid()) // 에디터에 이미 최상위 창이 존재한다면
     {
-        FSlateApplication::Get().AddWindowAsNativeChild(CookbookWindow, MainFrameModule.GetParentWindow().ToSharedRef()); // 자식으로 창 생성
+        FSlateApplication::Get().AddWindowAsNativeChild(CookbookWindow, MainFrameModule.GetParentWindow().ToSharedRef()); // 새 창을 자식으로 생성한다.
     }
     else
     {
-        FSlateApplication::Get().AddWindow(CookbookWindow); // 새로 창 생성 (부모가 됨)
+        FSlateApplication::Get().AddWindow(CookbookWindow); // 그게 아니면 새로 창을 생성한다. (부모가 됨)
     }
 }

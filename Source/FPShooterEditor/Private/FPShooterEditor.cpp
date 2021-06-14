@@ -21,6 +21,20 @@ void FFPShooterEditorModule::StartupModule()
 	auto Actions = MakeShareable(new MyCustomAssetActions()); // 사용자정의 액션 인스턴싱
 	AssetTools.RegisterAssetTypeActions(Actions); // 애셋 툴(에디터)에 사용자정의 액션을 추가한다. 
 	CreatedAssetTypeActions.Add(Actions); // 나중에 인스턴스를 해제할 수 있도록 액션 인스턴스(Actions)에 대한 참조를 CreatedAssetTypeActions 배열에 저장한다.
+
+	// IConsoleManager는 엔진의 콘솔 기능을 포함하는 서브 모듈이다.
+	DisplayTestCommand = IConsoleManager::Get().RegisterConsoleCommand(TEXT("DisplayTestCommandWindow"), TEXT("test"), FConsoleCommandDelegate::CreateRaw(this, &FFPShooterEditorModule::DisplayWindow, FString(TEXT("TestCommand Window"))), ECVF_Default); // Get() 함수로 ConsoleManager(생성한 콘솔 명령어)의 참조를 얻어오고 RegisterConsoleCommand() 함수로 콘솔 명령어를 추가한다.
+	DisplayUserSpecifiedWindow = IConsoleManager::Get().RegisterConsoleCommand(TEXT("DisplayWindow"), TEXT("test"), FConsoleCommandWithArgsDelegate::CreateLambda( // 총 2개의 콘솔 명령어를 정의하였다.
+		[&](const TArray<FString>& Args)
+		{
+			FString WindowTitle;
+			for (FString Arg : Args)
+			{
+				WindowTitle += Arg; WindowTitle.AppendChar(' '); // DisplayWindow 입력 후 두 번째 인수에 넣은 문자열을 창 타이틀에 출력한다.
+			}
+			this->DisplayWindow(WindowTitle);
+		}), ECVF_Default);
+
 }
 
 void FFPShooterEditorModule::ShutdownModule()
@@ -33,5 +47,16 @@ void FFPShooterEditorModule::ShutdownModule()
 	for (auto Action : CreatedAssetTypeActions) // 애셋 툴에 등록된 액션이 남아있을 경우
 	{
 		AssetTools.UnregisterAssetTypeActions(Action.ToSharedRef()); // CreatedAssetTypeActions에 저장된 참조를 활용하여 애셋 툴에 등록된 액션을 제거한다.
+	}
+
+	if (DisplayTestCommand) // 모듈이 언로드될 때 사용자정의 콘솔 명령어를 제거하려면 콘솔 명령 객체애 대한 참조를 유지해야 한다. (DisplayTestCommand 포인터로 참조를 유지하였다.)
+	{
+		IConsoleManager::Get().UnregisterConsoleObject(DisplayTestCommand); // 포인터에 저장한 사용자정의 콘솔 명령어의 주소를 활용하여 해당 명령어 인스턴스를 해제한다.
+		DisplayTestCommand = nullptr; // 댕글링 포인터가 되지 않도록 포인터를 nullptr 한다.
+	}
+	if (DisplayUserSpecifiedWindow) // 나머지 명령어도 반복한다.
+	{
+		IConsoleManager::Get().UnregisterConsoleObject(DisplayTestCommand);
+		DisplayTestCommand = nullptr;
 	}
 }
