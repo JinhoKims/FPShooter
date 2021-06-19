@@ -2,11 +2,13 @@
 #include "LevelEditor.h"
 #include "IAssetTools.h"
 #include "MyCustomAssetActions.h"
+#include "FPShooterStyle.h"
 
 IMPLEMENT_GAME_MODULE(FFPShooterEditorModule, FPShooterEditor);
 
 void FFPShooterEditorModule::StartupModule()
 {
+	FPShooterStyle::Initialize();
 	FPShooterCommands::Register();
 	TSharedPtr<FUICommandList> CommandList = MakeShareable(new FUICommandList());
 	CommandList->MapAction(FPShooterCommands::Get().MyButton, FExecuteAction::CreateRaw(this, &FFPShooterEditorModule::MyButton_Clicked), FCanExecuteAction()); // 버튼 클릭 시 실행할 함수 바인딩
@@ -39,15 +41,16 @@ void FFPShooterEditorModule::StartupModule()
 
 void FFPShooterEditorModule::ShutdownModule()
 {
+	FPShooterStyle::ShutDown();
 	ToolbarExtender->RemoveExtension(Extension.ToSharedRef()); // 이 모듈이 해제 시 추가한 버튼도 제거
 	Extension.Reset();
 	ToolbarExtender.Reset();
 
-	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get(); // 애셋 툴 모듈을 로드하고
-	for (auto Action : CreatedAssetTypeActions) // 애셋 툴에 등록된 액션이 남아있을 경우
-	{
-		AssetTools.UnregisterAssetTypeActions(Action.ToSharedRef()); // CreatedAssetTypeActions에 저장된 참조를 활용하여 애셋 툴에 등록된 액션을 제거한다.
-	}
+	//IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get(); // 애셋 툴 모듈을 로드하고
+	//for (auto Action : CreatedAssetTypeActions) // 애셋 툴에 등록된 액션이 남아있을 경우
+	//{
+	//	AssetTools.UnregisterAssetTypeActions(Action.ToSharedRef()); // CreatedAssetTypeActions에 저장된 참조를 활용하여 애셋 툴에 등록된 액션을 제거한다.
+	//}
 
 	if (DisplayTestCommand) // 모듈이 언로드될 때 사용자정의 콘솔 명령어를 제거하려면 콘솔 명령 객체애 대한 참조를 유지해야 한다. (DisplayTestCommand 포인터로 참조를 유지하였다.)
 	{
@@ -59,4 +62,5 @@ void FFPShooterEditorModule::ShutdownModule()
 		IConsoleManager::Get().UnregisterConsoleObject(DisplayTestCommand);
 		DisplayTestCommand = nullptr;
 	}
+
 }

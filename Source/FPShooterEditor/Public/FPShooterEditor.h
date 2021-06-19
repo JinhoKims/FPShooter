@@ -48,6 +48,7 @@ public:
 	{
 		TSharedRef<SWindow> CookbookWindow = SNew(SWindow).Title(FText::FromString(WindowTitle)).ClientSize(FVector2D(800, 400)).SupportsMaximize(false).SupportsMinimize(false); // WindowTitle 인자를 제목으로한 창을 생성 (최대화, 최소화 불가)
 		
+		// 메인프레임 모듈은 에디터를 관리하는 상위 모듈이다.
 		IMainFrameModule& MainFrameModule = FModuleManager::LoadModuleChecked<IMainFrameModule>(TEXT("MainFrame")); // 생성된 새 창에서 엔진의 메인 어플리케이션 프레임 모듈을 불러온다.
 		if (MainFrameModule.GetParentWindow().IsValid())  // 엔진에 이미 최상위 창(에디터)이 존재한다면
 		{
