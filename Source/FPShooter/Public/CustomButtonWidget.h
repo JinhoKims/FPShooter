@@ -16,7 +16,7 @@ DECLARE_DYNAMIC_DELEGATE_RetVal(FString, FGetString); // 문자열 갱신 델리
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FButtonClicked); // 버튼 클릭시의 델리게이트 선언 
 
 UCLASS()
-class FPSHOOTER_API UCustomButtonWidget : public UWidget // 블루프린트에 노출시키기 위한 위젯 클래스다. UWidget(프론트엔드) 객체는 SWidget(백엔드) 객체에 대한 참조가 있어야 한다.
+class FPSHOOTER_API UCustomButtonWidget : public UWidget // 블루프린트에 노출시키기 위한 UMG 위젯 클래스다. UWidget(프론트엔드) 객체는 SWidget(백엔드) 객체에 대한 참조가 있어야 한다.
 {
 	GENERATED_BODY()
 
